@@ -45,7 +45,6 @@ async fn get_cat_image_url() -> Result<Url, Box<dyn Error>> {
         Err(e) => Err(Box::new(format!("{}", e))),
     };
 
-    // Now you have the final Result<Url, Box<dyn std::error::Error>>
     match parsed_url_result {
         Ok(parsed_url) => {
             println!("serving image {}", parsed_url);
