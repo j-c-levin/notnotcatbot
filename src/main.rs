@@ -31,10 +31,42 @@ async fn get_cat_image_url() -> Result<Url, Box<dyn Error>> {
         .await?
         .json::<Vec<CatApiResponse>>()
         .await?;
+// Assuming response.first() returns a Result type
+    let url_string_result = match response.first() {
+        None => Err(Box::new("cannot get response")),
+        Some(response) => Ok(response.url.clone()),
+    };
 
-    println!("serving image {:?}", response.first().unwrap().url);
+    let parsed_url_result = match url_string_result {
+        Ok(url_string) => {
+            // Use the Url::parse method and handle its Result
+            match Url::parse(&url_string) {
+                Ok(url) => Ok(url),
+                Err(e) => Err(Box::new(format!("cannot parse url string: {}", e))),
+            }
+        }
+        Err(e) => Err(Box::new(format!("{}", e)))
+    };
 
-    Ok(response.first().unwrap().url.clone().parse().unwrap())
+    // Now you have the final Result<Url, Box<dyn std::error::Error>>
+    match parsed_url_result {
+        Ok(parsed_url) => {
+            // Successfully parsed URL
+            Ok(parsed_url)
+        }
+        Err(e) => Err(Box::from(format!("{}", &e)))
+    }
+    // match response.first() {
+    //     None => { Err(Box::from("No response")) }
+    //     Some(response) => {
+    //         println!("serving image {:?}", response.url);
+    //         match response.url.clone().parse::<Url>() {
+    //             Err(_) => { Err(Box::from(format!("Cannot parse url {}", response.url))) }
+    //             Ok(url) => { Ok(url) }
+    //         }
+    //     }
+    // }.expect("TODO: panic message");
+    // Ok(response.first().unwrap().url.clone().parse().unwrap())
 }
 
 async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
