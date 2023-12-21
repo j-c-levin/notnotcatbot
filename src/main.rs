@@ -10,10 +10,7 @@ use teloxide::{prelude::*, utils::command::BotCommands};
 
 #[derive(Debug, Deserialize)]
 struct CatApiResponse {
-    id: String,
     url: String,
-    width: u32,
-    height: u32,
 }
 
 async fn get_cat_image_url() -> Result<Url, Box<dyn Error>> {
