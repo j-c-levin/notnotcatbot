@@ -42,13 +42,15 @@ async fn get_cat_image_url() -> Result<Url, Box<dyn Error>> {
             Ok(url) => Ok(url),
             Err(e) => Err(Box::new(format!("cannot parse url string: {}", e))),
         },
-        Err(e) => Err(Box::new(format!("{}", e))),
+        Err(e) => Err(Box::new(format!(
+            "unable to retrieve url string result{}",
+            e
+        ))),
     };
 
     match parsed_url_result {
         Ok(parsed_url) => {
             println!("serving image {}", parsed_url);
-
             Ok(parsed_url)
         }
         Err(e) => Err(Box::from(format!("{}", &e))),
